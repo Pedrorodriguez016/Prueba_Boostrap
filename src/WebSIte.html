@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Funcion</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#buscar').click(function() {
+                $('#github').submit();
+            });
+
+            $('#github').on('submit', function(event) {
+                event.preventDefault();
+                const username = $('#usr').val();
+                $('#repos-table tbody').empty();
+                $.getJSON(`https://api.github.com/users/${username}/repos`, function(repos) {
+                    repos.forEach(function(repo) {
+                        $('#repos-table tbody').append(`
+                            <tr>
+                                <td><a href="${repo.html_url}" target="_blank">${repo.name}</a></td>
+                                <td>${repo.description || 'Sin descripcion'}</td>
+                                <td>${repo.stargazers_count}</td>
+                            </tr>
+                        `);
+                    });
+                }).fail(function() {
+                    alert('Usuario no encontrado. Introduzca un usuario valido.');
+                });
+            });
+        });
+    </script>
+</head>
+
+
+<head>
+    <title>Bootstrap</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+    <h1>GitHub repositories Website</h1>
+</div>
+<div class="container text-center">
+    <h2>Ingrese el User de GitHub</h2>
+    <form id="github">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <input id="usr" type="text" class="form-control" name="user" placeholder="User">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button id="buscar" class="btn btn-default">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="Table">
+        <table class="table table-striped" id="repos-table">
+            <thead>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Proyecto</th>
+                <th scope="col">Estrellas</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
